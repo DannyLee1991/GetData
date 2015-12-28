@@ -26,5 +26,5 @@ def get_fangjia(city,year=2,Class="defaultnew",dataType=3):
         if num <= 1 and i:
             parse_json(i)
 
-# get_fangjia("文山",year=2)
-parse_city_data('../data/citys')
+get_fangjia("郑州",year=2)
+# parse_city_data('../data/citys')

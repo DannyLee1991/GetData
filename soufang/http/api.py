@@ -2,7 +2,7 @@
 __author__ = 'lijianan'
 
 from http import send_get
-from soufang.utils.parser_utils import parse_json
+from soufang.utils.parser_utils import parse_json,parse_city_data
 import sys
 
 reload(sys)
@@ -23,7 +23,8 @@ def get_fangjia(city,year=2,Class="defaultnew",dataType=3):
     for num, i in enumerate(json_str.split("&")):
         print("====" + str(num))
         print(i)
-        if num <= 1:
+        if num <= 1 and i:
             parse_json(i)
 
-get_fangjia("呼和浩特",year=2)
+# get_fangjia("文山",year=2)
+parse_city_data('../data/citys')

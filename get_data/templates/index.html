@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}房价走势{% endblock %}
+{% block head %}
+{% load static %}
+<script src="{% static "js/Chart.js" %}" type="text/javascript"></script>
+<link rel="stylesheet" href="{% static "css/bootstrap_dropdown.css" %}"/>
+{% endblock %}
+{% block content %}
+
+<div class="container">
+
+    <div class="dropdown" style="margin-top:10px">
+        <button type="button" class="btn dropdown-toggle" id="city_dropdown"
+                data-toggle="dropdown">
+            城市
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="city_dropdown">
+            {% for prov_city_dict in province_city_dict_list %}
+            {% for province,city_list in prov_city_dict.items %}
+            <li class="dropdown-submenu" role="presentation">
+                <a class="disabled" role="menuitem" href="#" tabindex="-1">
+                    {{province}}
+                </a>
+
+                <ul class="dropdown-menu">
+                    <li class="dropdown-submenu">
+                        {% for c_dict in city_list %}
+                        {% for c_k,c_v in c_dict.items %}
+                        <a href="?city={{c_v}}">{{c_v}}</a>
+                        {% endfor %}
+                        {% endfor %}
+                    </li>
+                </ul>
+            </li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+        <b>{{city}}</b>
+    </div>
+
+    {% if city %}
+
+        {% if city_infos_of_one_hand %}
+
+        <h3>一手房</h3>
+
+        <div style="width:100%; margin-left: auto;margin-right: auto;margin-top:10px">
+            <canvas id="one_hand_chart" width="400" height="200"></canvas>
+        </div>
+
+        <h3>二手房</h3>
+
+        <div style="width:100%; margin-left: auto;margin-right: auto;margin-top:10px">
+            <canvas id="second_hand_chart" width="400" height="200"></canvas>
+        </div>
+
+        {% autoescape off %}
+        <script type="text/javascript">
+            var city_infos_of_one_hand = {{city_infos_of_one_hand}}
+            var city_infos_of_second_hand = {{city_infos_of_second_hand}}
+
+            var one_hand_time_array = new Array()
+            var one_hand_price_array = new Array()
+            var second_hand_time_array = new Array()
+            var second_hand_price_array = new Array()
+
+            for(var i = 0; i < city_infos_of_one_hand.length; i = i + 1){
+                one_hand_time_array[i]=city_infos_of_one_hand[i].time
+                one_hand_price_array[i]=city_infos_of_one_hand[i].price
+            }
+
+            for(var i = 0; i < city_infos_of_second_hand.length; i = i + 1){
+                second_hand_time_array[i]=city_infos_of_second_hand[i].time
+                second_hand_price_array[i]=city_infos_of_second_hand[i].price
+            }
+        </script>
+        {% endautoescape %}
+
+        <script src="static/js/line_chart_of_hosing_prace.js" type="text/javascript"></script>
+        {% else %}
+        <h3>抱歉，目前没有
+            <mark>{{city}}</mark>
+            的相关信息
+        </h3>
+        {% endif %}
+    {% else %}
+    <h3>请选择一个城市</h3>
+    {% endif %}
+</div>
+
+{% endblock %}

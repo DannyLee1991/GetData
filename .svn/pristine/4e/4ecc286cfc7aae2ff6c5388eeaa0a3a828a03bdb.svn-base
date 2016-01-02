@@ -1,0 +1,9 @@
+version: 1
+static:
+    - path: /get_data/static/
+      files: /get_data/static/
+      expire: 30d
+    - path: /get_data/favicon.ico
+      files: /get_data/favicon.ico
+      expire: 1y
+

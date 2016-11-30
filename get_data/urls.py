@@ -1,13 +1,10 @@
 from django.conf.urls import patterns, url
 from views.index import index
+from views.price_ranking import price_ranking
+from views.spider import spider
 
 urlpatterns = patterns('',
     url(r'^$',index),
-    # url(r'^searchResult/$',searchResult),
-    # url(r'^logList/$',logList),
-    # url(r'^context/(.*)$',context),
-    # url(r'^feedback/$',feedback),
-    # url(r'^logDetail/$',logDetail),
-    # url(r'^choose/$',choose),
-    # url(r'^manage/$',manage),
+    url(r'^price_ranking$',price_ranking),
+    url(r'^spider$',spider),
 )

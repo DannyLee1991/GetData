@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}上月房价全国排行{% endblock %}
+{% block head %}
+{% load static %}
+
+
+{% endblock %}
+{% block content %}
+
+hi
+{% endblock %}

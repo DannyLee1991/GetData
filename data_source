@@ -1,0 +1,3 @@
+国际金价
+xml类型文件,结尾ts参数要传当前毫秒值
+http://quote.forex.hexun.com/ForexXML/DAY/DAY_5_xauusd.xml?&ts=1458832099399

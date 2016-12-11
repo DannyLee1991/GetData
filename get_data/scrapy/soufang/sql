@@ -1,0 +1,5 @@
+// create index
+db.soufang.ensureIndex({"id":1},{"unique":true},{"background":true})
+
+// find and sort
+db.soufang.find({},{"url":"","total_price":1}).sort({"total_price":-1})

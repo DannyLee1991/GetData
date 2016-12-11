@@ -84,7 +84,7 @@ PROXIES = [
 COOKIES_ENABLED=False
 
 # 设置延迟
-DOWNLOAD_DELAY=3
+DOWNLOAD_DELAY=1
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -94,9 +94,13 @@ DOWNLOAD_DELAY=3
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    'soufang.pipelines.SomePipeline': 300,
-# }
+ITEM_PIPELINES = {
+   'soufang.pipelines.ExtractDataPipeline': 300,
+   'soufang.pipelines.SaveDataPipline':500,
+}
+
+MONGO_URI = "mongodb://localhost:27017";
+MONGO_DATABASE = "soufang";
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

@@ -2,7 +2,9 @@
 import random
 
 import scrapy
+
 from ..items import ESFItem
+from ..utils.Log import log_i
 
 import sys
 
@@ -17,7 +19,7 @@ class ESFListSpider(scrapy.Spider):
 
     base_url = "http://esf.sh.fang.com/map/?mapmode=y&orderby=30&ecshop=ecshophouse&PageNo=$&a=ajaxSearch&city=sh&searchtype=loupan"
     start_urls = []
-    for i in range(2, 4):
+    for i in range(2, 100):
         start_urls.append(str(base_url).replace("$", str(i)))
 
     def __init__(self, user_agent=''):
@@ -53,9 +55,6 @@ class ESFListSpider(scrapy.Spider):
     def parse(self, response):
         self.log('A response from %s just arrived!' % response.url)
 
-        print response.xpath("//a/@href")
-
-
         infos = response.xpath("//a/@href").extract()
 
         index = 0
@@ -66,15 +65,17 @@ class ESFListSpider(scrapy.Spider):
             if "esf" in i_str:
                 url = i_str.replace('\\', '').strip()
                 index += 1
-                print "==url:" + url + " ====================progress: " + str(index) + "/" + str(size) + "======="
+                log_i("==url:" + url + " ====================progress: " + str(index) + "/" + str(size) + "=======")
 
                 yield scrapy.Request(url=url.replace("\"", ""), callback=self.parse_details)
 
     def parse_details(self, response):
-        print "+++++++++++++被执行了+++++++++++++++++++"
+        log_i("+++++++++++++被执行了+++++++++++++++++++")
+
 
         # path
         xpath = "//body/div[@class='wrap']/div[@class='main clearfix']/div[@class='mainBoxL']"
+        xpath_bread = "//body/div[@class='wrap']/div[@class='bread']/p[@class='floatl']"
         div_title = "/div[@class='title']"
         p_gray9 = "/p[@class='gray9']"
         h1 = "/h1"
@@ -89,6 +90,17 @@ class ESFListSpider(scrapy.Spider):
         dt = "/dt"
 
         item = ESFItem()
+        item['url'] = response.url
+
+        bread_list = response.xpath("//body/div[@class='wrap']/div[@class='bread']/p[@class='floatl']/a").extract()
+        for index,bread in enumerate(bread_list[1:]):
+            if index == 0:
+                item["bread_city"] = bread
+            elif index == 1:
+                item["bread_area"] = bread
+            elif index == 2:
+                item["bread_positon"] = bread
+
         item['id'] = response.xpath(xpath +
                                     div_title +
                                     p_gray9 +
@@ -125,68 +137,69 @@ class ESFListSpider(scrapy.Spider):
         for i in dd_infos:
             if huxing_str in str(i).encode("utf-8"):
                 item['house_type'] = i.strip()
-                print "户型==>"
-                print i.strip()
+                log_i("户型==>")
+                log_i(i.strip())
             elif jzmj_str in str(i).encode("utf-8"):
                 item['house_build_area'] = i.strip()
-                print "建筑面积==>"
-                print i.strip()
+                log_i("建筑面积==>")
+                log_i(i.strip())
             elif symj_str in str(i).encode("utf-8"):
                 item['house_use_area'] = i.strip()
-                print "使用面积==>"
-                print i.strip()
+                log_i("使用面积==>")
+                log_i(i.strip())
             elif nd_str in str(i).encode("utf-8"):
                 item['house_age'] = i.strip()
-                print "年代==>"
-                print i.strip()
+                log_i("年代==>")
+                log_i(i.strip())
             elif cx_str in str(i).encode("utf-8"):
                 item['orientation'] = i.strip()
-                print "朝向==>"
-                print i.strip()
+                log_i("朝向==>")
+                log_i(i.strip())
             elif lc_str in str(i).encode("utf-8"):
                 item['floor'] = i.strip()
-                print "楼层==>"
-                print i.strip()
+                log_i("楼层==>")
+                log_i(i.strip())
             elif jg_str in str(i).encode("utf-8"):
                 item['structure'] = i.strip()
-                print "结构==>"
-                print i.strip()
+                log_i("结构==>")
+                log_i(i.strip())
             elif zx_str in str(i).encode("utf-8"):
                 item['decoration'] = i
-                print "装修==>"
-                print i
+                log_i("装修==>")
+                log_i(i.strip())
             elif zzlb_str in str(i).encode("utf-8"):
                 item['residential_category'] = i.strip()
-                print "住宅类别==>"
-                print i.strip()
+                log_i("住宅类别==>")
+                log_i(i.strip())
             elif jzlb_str in str(i).encode("utf-8"):
                 item['building_class'] = i.strip()
-                print "建筑类别==>"
-                print i.strip()
+                log_i("建筑类别==>")
+                log_i(i.strip())
             elif cqxz_str in str(i).encode("utf-8"):
                 item['property_right'] = i.strip()
-                print "产权性质==>"
-                print i.strip()
+                log_i("产权性质==>")
+                log_i(i.strip())
 
         dt_infos = response.xpath(xpath + div_houseInfor_clearfix + div_inforTxt + dl + dt + "/a").extract()
         for i in dt_infos:
             if "查看此楼盘的更多二手房房源" in str(i).encode("utf-8"):
                 item['property_name'] = i.strip()
-                print "楼盘名称==>"
-                print i.strip()
+                log_i("楼盘名称==>")
+                log_i(i.strip())
             elif "<span class=\"gray6 floatl\">学<span class=\"padl27\"></span>校：</span>" in str(i).encode("utf-8"):
                 item['school'] = i.strip()
-                print "学校==>"
-                print i.strip()
+                log_i("学校==>")
+                log_i(i.strip())
 
-        print "id ===> "
-        print item['id']
+        log_i("id ===> ")
+        log_i(item['id'])
 
-        print "publish_time ===> "
-        print item['publish_time']
+        log_i("publish_time ===> ")
+        log_i(item['publish_time'])
 
-        print "title ===> "
-        print item['title']
+        log_i("title ===> ")
+        log_i(item['title'])
 
-        print "total_price ===> "
-        print item['total_price']
+        log_i("total_price ===> ")
+        log_i(item['total_price'])
+        yield item

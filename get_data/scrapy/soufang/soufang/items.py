@@ -46,4 +46,12 @@ class ESFItem(scrapy.Item):
     school = scrapy.Field()
     # 配套设施
     supporting_facilities = scrapy.Field()
+
+    # 城市 - 面包屑导航
+    bread_city = scrapy.Field()
+    # 区域 - 面包屑导航
+    bread_area = scrapy.Field()
+    # 位置 - 面包屑导航
+    bread_positon = scrapy.Field()
+
     pass
